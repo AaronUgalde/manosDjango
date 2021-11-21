@@ -23,13 +23,13 @@
             <video id="theVideo" controls autoplay></video>
             <canvas id="theCanvas"></canvas>
         </div>
-        <button id="btnCapture">Capture</button>
+        <button action="/home/" id="btnCapture">Capture</button>
         <button id="btnDownloadImage">Download captured image</button>
-        <form action="/home/" method="POST" name="formulario">
-          {% csrf_token %}
+        <form method="POST" name="formulario" id="formulario">
           <textarea name="imagen" cols="30" rows="10" id="imagen"></textarea>
           <input type="text" id="letra" name="letra">
         </form>
+        <p id="letrasFaltan"></p>
     </body>
 
 </html>

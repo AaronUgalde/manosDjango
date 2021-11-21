@@ -13,10 +13,7 @@ mp_hands = mp.solutions.hands
 @csrf_exempt
 def home(request):
 
-    
     response = render(request,"index.html",{})
-
-    teclas = ["|","1","Tab","q","CapsLock","a","Shift","<","z","Control","Meta","2","w","s","x","Alt","3","e","d","c","4","5","r","t","f","g","v","b"," ","Backspace","¿","'","0","Enter","+","Dead","p","}","{","ñ","Shift","-","Control","ContextMenu","0","o","l",".","8","i","k",",","AltGraph","6","7","y","u","h","j","n","m"]
     
     PINKY_TIP_LEFT = ["|","1","Tab","q","CapsLock","a","Shift","<","z","Control","Meta"]
     RING_FINGER_TIP_LEFT = ["2","w","s","x","Alt"]
@@ -30,9 +27,10 @@ def home(request):
     INDEX_FINGER_TIP_RIGHT= ["6","7","y","u","h","j","n","m"]
     THUMB_TIP_RIGHT= [" "]
 
-    def redondear (x,y):
-        rangoX = [x-0.025,x+0.025]
-        rangoY = [y-0.025,y+0.025]
+    def redondear (x,y,z):
+        print(x)
+        rangoX = [x-0.1225*-z,x+0.1225*-z]
+        rangoY = [y-0.1225*-z,y+0.1225*-z]
         return [rangoX,rangoY]
 
     mp_hands = mp.solutions.hands
@@ -60,120 +58,107 @@ def home(request):
             # Convert the BGR image to RGB before processing.
             results = hands.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
-            try:
-                if results.multi_hand_landmarks is not None:
+            if results.multi_hand_landmarks is not None:
+                #try:
+                    coordsx = []
+                    coordsy = []
+                    coordsz = []
                     if letra in PINKY_TIP_LEFT:
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].y)
-                        coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].z)
+                        coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in RING_FINGER_TIP_LEFT:
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP].y)
-                        coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP].z)
+                        coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in MIDDLE_FINGER_TIP_LEFT:
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y)
-                        coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].z)
+                        coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in INDEX_FINGER_TIP_LEFT:
                         print("soy el dedo index left")
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y)
-                        coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].z)
+                        coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in THUMB_TIP_LEFT:
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].y)
-                        coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].z)
+                        coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in PINKY_TIP_RIGHT:
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].y)
-                        if coordsx[1] is not None:
-                            coords = redondear(coordsx[1],coordsy[1])
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].z)
+                        if len(coordsx) == 2:
+                            coords = redondear(coordsx[1],coordsy[1],coordsz[1])
                         else:
-                            coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in RING_FINGER_TIP_RIGHT:
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP].y)
-                        if coordsx[1] is not None:
-                            coords = redondear(coordsx[1],coordsy[1])
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP].z)
+                        if len(coordsx) == 2:
+                            coords = redondear(coordsx[1],coordsy[1],coordsz[1])
                         else:
-                            coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in MIDDLE_FINGER_TIP_RIGHT:
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y)
-                        if coordsx[1] is not None:
-                            coords = redondear(coordsx[1],coordsy[1])
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].z)
+                        if len(coordsx) == 2:
+                            coords = redondear(coordsx[1],coordsy[1],coordsz[1])
                         else:
-                            coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in INDEX_FINGER_TIP_RIGHT:
                         print("soy el dedo index right")
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y)
-                        if coordsx[1] is not None:
-                            coords = redondear(coordsx[1],coordsy[1])
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].z)
+                        if len(coordsx) == 2:
+                            print("entre aqui")
+                            coords = redondear(coordsx[1],coordsy[1],coordsz[1])
                         else:
-                            coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            print("entre aqui")
+                            coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in THUMB_TIP_RIGHT:
-                        coordsx = []
-                        coordsy = []
                         for hand_landmarks in results.multi_hand_landmarks:
                             coordsx.append(hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x)
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].y)
-                        if coordsx[1] is not None:
-                            coords = redondear(coordsx[1],coordsy[1])
+                            coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].z)
+                        if len(coordsx) == 2:
+                            coords = redondear(coordsx[1],coordsy[1],coordsz[1])
                         else:
-                            coords = redondear(coordsx[0],coordsy[0])
-                        response.set_cookie(letra,coords)
+                            coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
-                teclas.remove(letra)
-            except:
-                print("No se detecto tu mano")
+                    response.set_cookie(letra,coords)
+                #except Exception as e:
+                    print(" Algo paso pero si se detecto la mano")
+            else:
+                print("No se detecto tu manos uwuwnt")
 
-    return render(request,"index.html",{})
+    return response
 
 def funcion(request):
     print("doajkñ{asjd")
