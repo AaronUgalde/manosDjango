@@ -25,9 +25,10 @@
             <canvas id="theCanvas"></canvas>
         </div>
         <form method="POST" name="formulario" id="formulario">
+          {% csrf_token %}
           <div id='message'>aqui apareceran las letras que ya registraste</div>
           <div id="estado">aqui aparecera si se registro la tecla o no</div>
-          <a href=""></a>
+          <a href="/juego/">jugar con la configuracion</a>
         </form>
     </body>
 

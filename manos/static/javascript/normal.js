@@ -7,6 +7,18 @@ var points = 0;
 var spans;
 var typed;
 var seconds = 60;
+var errores = 0;
+var videoWidth = 320;
+var videoHeight = 240;
+var videoTag = document.getElementById('theVideo');
+var canvasTag = document.getElementById('theCanvas');
+var csrf = document.getElementsByName("csrfmiddlewaretoken")
+
+videoTag.setAttribute('width', videoWidth);
+videoTag.setAttribute('height', videoHeight);
+canvasTag.setAttribute('width', videoWidth);
+canvasTag.setAttribute('height', videoHeight);
+
 
 	function countdown() {
 		points = 0;
@@ -57,6 +69,7 @@ var seconds = 60;
 	button.addEventListener("click", function(e){
 		countdown();
 		random();
+		loadCamera();
 		button.disabled = true;	
 	});
 
@@ -91,9 +104,44 @@ var seconds = 60;
 			}
 
 		}
+		var canvasContext = canvasTag.getContext('2d');
+		canvasContext.drawImage(videoTag, 0, 0, videoWidth, videoHeight);
+		  var data = canvasTag.toDataURL("image/png")
+		  console.log("presionada: "+e.key)
+		  $.ajax({
+			type: 'POST',
+			url: '/juego/',
+			data: {
+			  imagen: data,
+			  letra: e.key
+			},
+			dataType: 'json',
+			success: function (response) {
+			  errores += parseInt(response.errores)
+			  console.log(errores)
+			  document.getElementById("errores").innerHTML = errores
+			  document.getElementById("estado").innerHTML = response.estado
+			}
+		  })
 }
 
 document.addEventListener("keydown", typing, false);
 
-//Codigo de lo de las manos 
+//hands
+
+//variables
+
+function loadCamera() {
+	navigator.mediaDevices.getUserMedia({
+		audio: false,
+		video: {
+		  width: videoWidth,
+		  height: videoHeight
+		}}).then(stream => {
+		  videoTag.srcObject = stream;
+		}).catch(e => {
+		  document.getElementById('errorTxt').innerHTML = 'ERROR: ' + e.toString();
+		});
+
+};
 
