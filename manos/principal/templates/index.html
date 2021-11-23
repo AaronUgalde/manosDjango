@@ -6,6 +6,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -13,11 +14,11 @@
 
     <head>
         <meta charset="utf-8">
-        <title>JnjSite.com: taking photo from camera</title>
+        <title>confiracion</title>
     </head>
 
     <body>
-        <h1>JnjSite.com: taking photo from camera</h1>
+        <h1>Configuracion</h1>
         <p id="errorTxt"></p>
         <div>
             <video id="theVideo" controls autoplay></video>
@@ -28,8 +29,9 @@
         <form method="POST" name="formulario" id="formulario">
           <textarea name="imagen" cols="30" rows="10" id="imagen"></textarea>
           <input type="text" id="letra" name="letra">
+          <div id='message'>aqui apareceran las letras que ya registraste</div>
+          <div id="estado">aqui aparecera si se registro la tecla o no</div>
         </form>
-        <p id="letrasFaltan"></p>
     </body>
 
 </html>

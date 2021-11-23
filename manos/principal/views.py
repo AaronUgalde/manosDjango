@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, response
 from django.template import Template,Context
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 import cv2
 import mediapipe as mp
 import base64
@@ -12,6 +13,9 @@ mp_hands = mp.solutions.hands
 
 @csrf_exempt
 def home(request):
+
+    letrasGuardadas = ""
+    estado = ""
 
     response = render(request,"index.html",{})
     
@@ -27,8 +31,9 @@ def home(request):
     INDEX_FINGER_TIP_RIGHT= ["6","7","y","u","h","j","n","m"]
     THUMB_TIP_RIGHT= [" "]
 
+    teclas = ["|","1","Tab","q","CapsLock","a","Shift","<","z","Control","Meta","2","w","s","x","Alt","3","e","d","c","4","5","r","t","f","g","v","b","Backspace","¿","'","0","Enter","+","Dead","p","}","{","ñ","Shift","-","Control","ContextMenu","0","o","l",".","8","i","k",",","AltGraph","6","7","y","u","h","j","n","m"]
+
     def redondear (x,y,z):
-        print(x)
         rangoX = [x-0.1225*-z,x+0.1225*-z]
         rangoY = [y-0.1225*-z,y+0.1225*-z]
         return [rangoX,rangoY]
@@ -38,7 +43,8 @@ def home(request):
     letra = request.POST.get("letra")
 
     if imagen == None:
-        print("a")
+        print("No hay imagen")
+        estado = "no se recupero ninguna imagen"
     else:
         print(letra)
         imagen = imagen.replace("data:image/png;base64,","")
@@ -59,7 +65,7 @@ def home(request):
             results = hands.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
             if results.multi_hand_landmarks is not None:
-                #try:
+                try:
                     coordsx = []
                     coordsy = []
                     coordsz = []
@@ -136,10 +142,8 @@ def home(request):
                             coordsy.append(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y)
                             coordsz.append(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].z)
                         if len(coordsx) == 2:
-                            print("entre aqui")
                             coords = redondear(coordsx[1],coordsy[1],coordsz[1])
                         else:
-                            print("entre aqui")
                             coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
                     elif letra in THUMB_TIP_RIGHT:
@@ -152,11 +156,25 @@ def home(request):
                         else:
                             coords = redondear(coordsx[0],coordsy[0],coordsz[0])
                         print(coords)
-                    response.set_cookie(letra,coords)
-                #except Exception as e:
-                    print(" Algo paso pero si se detecto la mano")
+                    request.session[letra] = coords
+                    estado = "tecla guardada con exito"
+                except Exception as e:
+                    print(e," Algo paso pero si se detecto la mano")
+                    estado = "ocurrio un error :("
             else:
                 print("No se detecto tu manos uwuwnt")
+                estado = "No se detecta la mano"
+
+    for i in teclas:
+        if i in request.session:
+            letrasGuardadas += i+","
+    
+    print("letras guardadas: ",letrasGuardadas," :letrasGuradadas")
+
+    if request.is_ajax and request.method == "POST":
+        
+        print("entre al ajx")
+        return JsonResponse({"msg": letrasGuardadas,"estado": estado})
 
     return response
 

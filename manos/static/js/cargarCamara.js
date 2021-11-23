@@ -4,6 +4,10 @@ var videoTag = document.getElementById('theVideo');
 var canvasTag = document.getElementById('theCanvas');
 var btnCapture = document.getElementById("btnCapture");
 var btnDownloadImage = document.getElementById("btnDownloadImage");
+var csrf = document.getElementsByName("csrfmiddlewaretoken")
+var form = document.getElementsByName("formulario")
+var msg = document.getElementById("message")
+
 videoTag.setAttribute('width', videoWidth);
 videoTag.setAttribute('height', videoHeight);
 canvasTag.setAttribute('width', videoWidth);
@@ -26,6 +30,18 @@ window.onload = () => {
     console.log("presionada: "+e.key)
     document.getElementById("imagen").value = data 
     document.getElementById("letra").value = e.key
-    document.formulario.submit()
+    $.ajax({
+      type: 'POST',
+      url: '',
+      data: {
+        imagen: data,
+        letra: e.key
+      },
+      dataType: 'json',
+      success: function (response) {
+        document.getElementById("message").innerHTML = response.msg
+        document.getElementById("estado").innerHTML = response.estado
+      }
+    })
   };
 };
