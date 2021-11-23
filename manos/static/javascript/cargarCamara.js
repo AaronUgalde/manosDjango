@@ -2,10 +2,7 @@ var videoWidth = 320;
 var videoHeight = 240;
 var videoTag = document.getElementById('theVideo');
 var canvasTag = document.getElementById('theCanvas');
-var btnCapture = document.getElementById("btnCapture");
-var btnDownloadImage = document.getElementById("btnDownloadImage");
 var csrf = document.getElementsByName("csrfmiddlewaretoken")
-var form = document.getElementsByName("formulario")
 var msg = document.getElementById("message")
 
 videoTag.setAttribute('width', videoWidth);
@@ -28,8 +25,6 @@ window.onload = () => {
     canvasContext.drawImage(videoTag, 0, 0, videoWidth, videoHeight);
     var data = canvasTag.toDataURL("image/png")
     console.log("presionada: "+e.key)
-    document.getElementById("imagen").value = data 
-    document.getElementById("letra").value = e.key
     $.ajax({
       type: 'POST',
       url: '',

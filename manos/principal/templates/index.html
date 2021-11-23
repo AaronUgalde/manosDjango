@@ -14,7 +14,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>confiracion</title>
+        <title>configuracion</title>
     </head>
 
     <body>
@@ -24,13 +24,10 @@
             <video id="theVideo" controls autoplay></video>
             <canvas id="theCanvas"></canvas>
         </div>
-        <button action="/home/" id="btnCapture">Capture</button>
-        <button id="btnDownloadImage">Download captured image</button>
         <form method="POST" name="formulario" id="formulario">
-          <textarea name="imagen" cols="30" rows="10" id="imagen"></textarea>
-          <input type="text" id="letra" name="letra">
           <div id='message'>aqui apareceran las letras que ya registraste</div>
           <div id="estado">aqui aparecera si se registro la tecla o no</div>
+          <a href=""></a>
         </form>
     </body>
 
@@ -38,4 +35,4 @@
 </body>
 </html>
 
-<script src="{% static 'js/cargarCamara.js' %}"></script>
+<script src="{% static 'javaScript/cargarCamara.js' %}"></script>

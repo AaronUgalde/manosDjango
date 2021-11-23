@@ -178,6 +178,5 @@ def home(request):
 
     return response
 
-def funcion(request):
-    print("doajkñ{asjd")
-    return True
+def juego(request):
+    return render(request,'normal-cam.html')
